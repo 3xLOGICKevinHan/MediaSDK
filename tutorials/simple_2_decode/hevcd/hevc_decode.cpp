@@ -275,7 +275,7 @@ void hevc_decoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
         h = pInfo->Height;
     }
 
-    m_lpbBufOut = (LPBYTE)realloc(nullptr, w * h * 3 / 2);
+    m_lpbBufOut = (LPBYTE)realloc(m_lpbBufOut, w * h * 3 / 2);
 
     if (pInfo->FourCC != MFX_FOURCC_RGB4 && pInfo->FourCC != MFX_FOURCC_A2RGB10)
     {
