@@ -25,7 +25,7 @@
 int main()
 {
     LPCTSTR DLL_HEVCD = "hevcd.dll";
-    HINSTANCE hEVCD = ::LoadLibraryEx(DLL_HEVCD, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    HINSTANCE hEVCD = ::LoadLibrary(DLL_HEVCD);
     if (hEVCD)
     {
         typedef void* (*dll_create_hevcd)();
