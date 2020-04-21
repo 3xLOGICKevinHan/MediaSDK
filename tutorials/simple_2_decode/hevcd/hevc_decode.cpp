@@ -31,11 +31,11 @@ hevc_decoder::~hevc_decoder()
     //  - It is recommended to close Media SDK components first, before releasing allocated surfaces, since
     //    some surfaces may still be locked by internal Media SDK resources.
 
-    m_mfxDEC->Close();
+    if (m_mfxDEC.get()) m_mfxDEC->Close();
     // session closed automatically on destruction
 
     Release();
-    free(m_lpbBufOut);
+    if (m_lpbBufOut) free(m_lpbBufOut);
 }
 
 int hevc_decoder::initialize(LPBYTE lpbFrame, LONG nFrameSize)
