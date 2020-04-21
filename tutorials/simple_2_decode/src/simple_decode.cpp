@@ -88,8 +88,29 @@ int main(int argc, char* argv[])
     // Set required video parameters for decode
     mfxVideoParam mfxVideoParams;
     memset(&mfxVideoParams, 0, sizeof(mfxVideoParams));
-    mfxVideoParams.mfx.CodecId = MFX_CODEC_AVC;
+    mfxVideoParams.mfx.CodecId = MFX_CODEC_HEVC;
     mfxVideoParams.IOPattern = MFX_IOPATTERN_OUT_SYSTEM_MEMORY;
+
+    // 4. Load the HEVC plugin
+    mfxPluginUID codecUID;
+    bool success = true;
+    codecUID = msdkGetPluginUID(impl, MSDK_VDECODE, mfxVideoParams.mfx.CodecId);
+
+    if (AreGuidsEqual(codecUID, MSDK_PLUGINGUID_NULL)) {
+        printf("Get Plugin UID for HEVC is failed.\n");
+        success = false;
+    }
+
+    printf("Loading HEVC plugin: %s\n", ConvertGuidToString(codecUID));
+
+    //On the success of get the UID, load the plugin
+    if (success) {
+        sts = MFXVideoUSER_Load(session, &codecUID, ver.Major);
+        if (sts < MFX_ERR_NONE) {
+            printf("Loading HEVC plugin failed\n");
+            success = false;
+        }
+    }
 
     // Prepare Media SDK bit stream buffer
     // - Arbitrary buffer size for this example
@@ -193,6 +214,7 @@ int main(int argc, char* argv[])
             if (bEnableOutput) {
                 sts = WriteRawFrame(pmfxOutSurface, fSink.get());
                 MSDK_BREAK_ON_ERROR(sts);
+                fflush(fSink.get());
 
                 printf("Frame number: %d\r", nFrame);
                 fflush(stdout);

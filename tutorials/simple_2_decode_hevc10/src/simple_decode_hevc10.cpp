@@ -215,6 +215,7 @@ int main(int argc, char** argv)
             if (bEnableOutput) {
                 sts = WriteRaw10BitFrame(pmfxOutSurface, fSink.get());
                 MSDK_BREAK_ON_ERROR(sts);
+                fflush(fSink.get());
 
                 printf("Frame number: %d\r", nFrame);
                 fflush(stdout);
