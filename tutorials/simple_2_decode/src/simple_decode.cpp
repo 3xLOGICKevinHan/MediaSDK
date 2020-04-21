@@ -51,6 +51,10 @@ int main()
         LPBITMAPINFO lpbmpinfo = nullptr;
         LPBYTE frmdata = GetFrame(hdl, (void*&)lpbmpinfo);
 
+        //write result yuv file
+        fileUniPtr fResult(OpenFile(R"(D:\Kevin\h265_2.yuv)", "wb"), &CloseFile);
+        fwrite(frmdata, 1, lpbmpinfo->bmiHeader.biSizeImage, fResult.get());
+
         destroy_hevcd(hdl);
 
         free(buf);
