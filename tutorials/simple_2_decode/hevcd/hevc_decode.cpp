@@ -188,7 +188,39 @@ int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
             sts = MFX_ERR_NONE;
 
         if (MFX_ERR_NONE == sts)
-            sts = m_session.SyncOperation(syncp, MFX_INFINITE);      // Synchronize. Wait until decoded frame is ready
+            sts = m_session.SyncOperation(syncp, 60000);      // Synchronize. Wait until decoded frame is ready
+
+        if (MFX_ERR_NONE == sts) {
+            FillBITMAPINFO(pmfxOutSurface);
+            FillOutputBuffer(pmfxOutSurface);
+            return sts;
+        }
+    }
+
+    // MFX_ERR_MORE_DATA means that file has ended, need to go to buffering loop, exit in case of other errors
+    MSDK_IGNORE_MFX_STS(sts, MFX_ERR_MORE_DATA);
+    MSDK_CHECK_RESULT(sts, MFX_ERR_NONE, sts);
+
+    //
+    // Stage 2: Retrieve the buffered decoded frames
+    //
+    while (MFX_ERR_NONE <= sts || MFX_ERR_MORE_SURFACE == sts) {
+        if (MFX_WRN_DEVICE_BUSY == sts)
+            MSDK_SLEEP(1);  // Wait if device is busy, then repeat the same call to DecodeFrameAsync
+
+        nIndex = GetFreeSurfaceIndex(m_pmfxSurfaces);        // Find free frame surface
+        MSDK_CHECK_ERROR(MFX_ERR_NOT_FOUND, nIndex, MFX_ERR_MEMORY_ALLOC);
+
+        // Decode a frame asychronously (returns immediately)
+        sts = m_mfxDEC->DecodeFrameAsync(NULL, &m_pmfxSurfaces[nIndex], &pmfxOutSurface, &syncp);
+
+        // Ignore warnings if output is available,
+        // if no output and no action required just repeat the DecodeFrameAsync call
+        if (MFX_ERR_NONE < sts && syncp)
+            sts = MFX_ERR_NONE;
+
+        if (MFX_ERR_NONE == sts)
+            sts = m_session.SyncOperation(syncp, 60000);      // Synchronize. Waits until decoded frame is ready
 
         if (MFX_ERR_NONE == sts) {
             FillBITMAPINFO(pmfxOutSurface);
@@ -196,6 +228,10 @@ int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
             break;
         }
     }
+
+    // MFX_ERR_MORE_DATA indicates that all buffers has been fetched, exit in case of other errors
+    MSDK_IGNORE_MFX_STS(sts, MFX_ERR_MORE_DATA);
+    MSDK_CHECK_RESULT(sts, MFX_ERR_NONE, sts);
 
     return sts;
 }
@@ -254,13 +290,13 @@ void hevc_decoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
         h = pInfo->CropH / 2;
         w = pInfo->CropW;
         for (i = 0; i < h; i++)
-            for (j = 0; j < w; j += 2)
+            for (j = 1; j < w; j += 2)
             {
                 WriteChunk(pData->UV, 2, 1, pInfo, pData, i, j);
                 ++m_BufOutOffset;
             }
         for (i = 0; i < h; i++)
-            for (j = 1; j < w; j += 2)
+            for (j = 0; j < w; j += 2)
             {
                 WriteChunk(pData->UV, 2, 1, pInfo, pData, i, j);
                 ++m_BufOutOffset;
