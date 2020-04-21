@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmfx_vs2015", "api\mfx_dispatch\windows\libmfx_vs2015.vcxproj", "{A9F7AEFB-DC6C-49E8-8E71-5351ABDCE627}"
 EndProject
@@ -186,6 +186,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hevc_fei_extractor", "tools\bs_parser_hevc\tools\hevc_fei_extractor\hevc_fei_extractor.vcxproj", "{11CDD87B-B0B9-4BA3-BC68-6501053C28A7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmfx_uwp", "api\mfx_dispatch\windows\libmfx_uwp.vcxproj", "{336AEFC3-987C-40AA-9678-E8BF1EC9C26F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hevcd", "tutorials\simple_2_decode\hevcd\hevcd.vcxproj", "{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -601,6 +603,16 @@ Global
 		{336AEFC3-987C-40AA-9678-E8BF1EC9C26F}.Release|Win32.Build.0 = Release|Win32
 		{336AEFC3-987C-40AA-9678-E8BF1EC9C26F}.Release|x64.ActiveCfg = Release|x64
 		{336AEFC3-987C-40AA-9678-E8BF1EC9C26F}.Release|x64.Build.0 = Release|x64
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Debug|ARM.ActiveCfg = Debug|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Debug|Win32.Build.0 = Debug|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Debug|x64.ActiveCfg = Debug|x64
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Debug|x64.Build.0 = Debug|x64
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Release|ARM.ActiveCfg = Release|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Release|Win32.ActiveCfg = Release|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Release|Win32.Build.0 = Release|Win32
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Release|x64.ActiveCfg = Release|x64
+		{7F1BD28F-CB78-43E0-A7C6-4BFC1C383FB0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
