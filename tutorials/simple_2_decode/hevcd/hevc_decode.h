@@ -29,6 +29,7 @@ private:
 private:
 	MFXVideoSession m_session{};
 	std::unique_ptr<MFXVideoDECODE> m_mfxDEC;
+	std::vector<mfxU8> m_surfaceBuffersData;
 	std::vector<mfxFrameSurface1> m_pmfxSurfaces;
 	std::vector<mfxU8> m_bstData;
 

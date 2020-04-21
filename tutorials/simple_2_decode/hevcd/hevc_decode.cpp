@@ -118,8 +118,8 @@ int hevc_decoder::initialize(LPBYTE lpbFrame, LONG nFrameSize)
     mfxU16 height = (mfxU16)MSDK_ALIGN32(Request.Info.Height);
     mfxU8 bitsPerPixel = 12;        // NV12 format is a 12 bits per pixel format
     mfxU32 surfaceSize = width * height * bitsPerPixel / 8;
-    std::vector<mfxU8> surfaceBuffersData(surfaceSize * numSurfaces);
-    mfxU8* surfaceBuffers = surfaceBuffersData.data();
+    m_surfaceBuffersData.resize(surfaceSize * numSurfaces);
+    mfxU8* surfaceBuffers = m_surfaceBuffersData.data();
 
     // Allocate surface headers (mfxFrameSurface1) for decoder
     m_pmfxSurfaces.resize(numSurfaces);
