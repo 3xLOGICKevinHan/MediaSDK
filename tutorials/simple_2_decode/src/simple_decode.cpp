@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     options.ctx.options = OPTIONS_DECODE;
     options.ctx.usage = usage;
     // Set default values:
-    options.values.impl = MFX_IMPL_AUTO_ANY;
+    options.values.impl = MFX_IMPL_SOFTWARE;
 
     // here we parse options
     ParseOptions(argc, argv, &options);
