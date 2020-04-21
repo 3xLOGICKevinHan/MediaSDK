@@ -188,7 +188,7 @@ int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
             sts = MFX_ERR_NONE;
 
         if (MFX_ERR_NONE == sts)
-            sts = m_session.SyncOperation(syncp, 60000);      // Synchronize. Wait until decoded frame is ready
+            sts = m_session.SyncOperation(syncp, MFX_INFINITE);      // Synchronize. Wait until decoded frame is ready
 
         if (MFX_ERR_NONE == sts) {
             FillBITMAPINFO(pmfxOutSurface);
