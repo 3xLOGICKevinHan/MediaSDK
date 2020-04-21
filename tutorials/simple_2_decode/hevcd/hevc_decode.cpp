@@ -22,7 +22,6 @@
 
 hevc_decoder::hevc_decoder()
 {
-    m_bstData.resize(10*1024 * 1024);
 }
 
 hevc_decoder::~hevc_decoder()
@@ -160,10 +159,9 @@ int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
     // - Arbitrary buffer size for this example
     mfxBitstream mfxBS;
     memset(&mfxBS, 0, sizeof(mfxBS));
-    mfxBS.MaxLength = m_bstData.size();
-    mfxBS.DataLength = nFrameSize;
-    mfxBS.Data = m_bstData.data();
-    memcpy(mfxBS.Data, lpbFrame, nFrameSize);
+    mfxBS.Data = lpbFrame;
+    mfxBS.DataOffset = 0;
+    mfxBS.MaxLength = mfxBS.DataLength = nFrameSize;
 
     //
     // Stage 1: Main decoding loop
