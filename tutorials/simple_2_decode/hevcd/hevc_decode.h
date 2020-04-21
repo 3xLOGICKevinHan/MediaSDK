@@ -21,7 +21,7 @@ private:
 		mfxFrameInfo* pInfo, mfxFrameData* pData, mfxU32 i,
 		mfxU32 j)
 	{
-		memcpy(m_lpbBufOut, plane +
+		memcpy(m_lpbBufOut+ m_BufOutOffset, plane +
 				(pInfo->CropY * pData->Pitch / factor + pInfo->CropX) +
 				i * pData->Pitch + j, chunksize);
 	}
@@ -35,6 +35,7 @@ private:
 
 	BITMAPINFO m_biOutput{};
 	LPBYTE m_lpbBufOut{};
+	mfxU32  m_BufOutOffset{};
 
 	bool m_initialized{false};
 };

@@ -245,17 +245,28 @@ void hevc_decoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
 
     if (pInfo->FourCC != MFX_FOURCC_RGB4 && pInfo->FourCC != MFX_FOURCC_A2RGB10)
     {
+        m_BufOutOffset = {};
+
         for (i = 0; i < pInfo->CropH; i++)
+        {
             WriteChunk(pData->Y, 1, pInfo->CropW, pInfo, pData, i, 0);
+            m_BufOutOffset += pInfo->CropW;
+        }
 
         h = pInfo->CropH / 2;
         w = pInfo->CropW;
         for (i = 0; i < h; i++)
             for (j = 0; j < w; j += 2)
+            {
                 WriteChunk(pData->UV, 2, 1, pInfo, pData, i, j);
+                ++m_BufOutOffset;
+            }
         for (i = 0; i < h; i++)
             for (j = 1; j < w; j += 2)
+            {
                 WriteChunk(pData->UV, 2, 1, pInfo, pData, i, j);
+                ++m_BufOutOffset;
+            }
     }
 }
 
