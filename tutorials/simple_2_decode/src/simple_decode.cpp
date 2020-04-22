@@ -39,10 +39,10 @@ int main()
         dll_decode decode = reinterpret_cast<dll_decode>(::GetProcAddress(hEVCD, "decode"));
         dll_GetFrame GetFrame = reinterpret_cast<dll_GetFrame>(::GetProcAddress(hEVCD, "GetFrame"));
 
-        constexpr int BUF_LEN = 1024 * 1024;
+        constexpr int BUF_LEN = 287982;
         LPBYTE buf = (LPBYTE)realloc(nullptr, BUF_LEN);
 
-        fileUniPtr fSource(OpenFile(R"(D:\Kevin\h265_2.h265)", "rb"), &CloseFile);
+        fileUniPtr fSource(OpenFile(R"(D:\Kevin\moredata.h265)", "rb"), &CloseFile);
         fread(buf, 1, BUF_LEN, fSource.get());
 
         void* hdl = create_hevcd();
