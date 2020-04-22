@@ -46,13 +46,24 @@ int main()
         fread(buf, 1, BUF_LEN, fSource.get());
 
         void* hdl = create_hevcd();
-
-        int ret = decode(hdl, buf, BUF_LEN);
         LPBITMAPINFO lpbmpinfo = nullptr;
-        LPBYTE frmdata = GetFrame(hdl, (void*&)lpbmpinfo);
+        LPBYTE frmdata = {};
+
+        int i = 0;
+        while (i++<180000)
+        {
+            int ret = decode(hdl, buf, BUF_LEN);
+            lpbmpinfo = nullptr;
+            frmdata = GetFrame(hdl, (void*&)lpbmpinfo);
+
+            Sleep(20); // simulate render part code
+
+            destroy_hevcd(hdl);
+            hdl = create_hevcd();
+        }
 
         //write result yuv file
-        fileUniPtr fResult(OpenFile(R"(D:\Kevin\h265_2.yuv)", "wb"), &CloseFile);
+        fileUniPtr fResult(OpenFile(R"(D:\Kevin\moredata.yuv)", "wb"), &CloseFile);
         fwrite(frmdata, 1, lpbmpinfo->bmiHeader.biSizeImage, fResult.get());
 
         destroy_hevcd(hdl);
