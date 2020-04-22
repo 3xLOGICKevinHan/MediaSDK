@@ -48,6 +48,9 @@ int main()
         LPBITMAPINFO lpbmpinfo = nullptr;
         LPBYTE frmdata = {};
 
+        mfxTime tStart, tEnd;
+        mfxGetTime(&tStart);
+
         int i = 0;
         while (i++<50)
         {
@@ -64,6 +67,11 @@ int main()
             //hdl = create_hevcd();
             //printf("-->4\n");
         }
+
+        mfxGetTime(&tEnd);
+        double elapsed = TimeDiffMsec(tEnd, tStart) / 1000;
+        //double fps = ((double)nFrame / elapsed);
+        printf("\nExecution time: %3.2f s\n", elapsed);
 
         //write result yuv file
         fileUniPtr fResult(OpenFile(R"(D:\Kevin\moredata.yuv)", "wb"), &CloseFile);
