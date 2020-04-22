@@ -20,11 +20,11 @@
 
 #include "hevc_decode.h"
 
-hevc_decoder::hevc_decoder()
+HEVCDecoder::HEVCDecoder()
 {
 }
 
-hevc_decoder::~hevc_decoder()
+HEVCDecoder::~HEVCDecoder()
 {
     // ===================================================================
     // Clean up resources
@@ -38,7 +38,7 @@ hevc_decoder::~hevc_decoder()
     if (m_lpbBufOut) free(m_lpbBufOut);
 }
 
-int hevc_decoder::initialize(LPBYTE lpbFrame, LONG nFrameSize)
+int HEVCDecoder::Init(LPBYTE lpbFrame, LONG nFrameSize)
 {
     mfxStatus sts = MFX_ERR_NONE;
 
@@ -139,11 +139,11 @@ int hevc_decoder::initialize(LPBYTE lpbFrame, LONG nFrameSize)
     return MFX_ERR_NONE;
 }
 
-int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
+int HEVCDecoder::Decode(LPBYTE lpbFrame, LONG nFrameSize)
 {
     if (!m_initialized)
     {
-        m_initialized = initialize(lpbFrame, nFrameSize) == MFX_ERR_NONE;
+        m_initialized = Init(lpbFrame, nFrameSize) == MFX_ERR_NONE;
         if (!m_initialized) return -1;
     }
 
@@ -236,7 +236,7 @@ int hevc_decoder::decode(LPBYTE lpbFrame, LONG nFrameSize)
     return sts;
 }
 
-void hevc_decoder::FillBITMAPINFO(mfxFrameSurface1* pSurface)
+void HEVCDecoder::FillBITMAPINFO(mfxFrameSurface1* pSurface)
 {
     mfxFrameInfo* pInfo = &pSurface->Info;
     mfxU16 h, w;
@@ -257,7 +257,7 @@ void hevc_decoder::FillBITMAPINFO(mfxFrameSurface1* pSurface)
     m_biOutput.bmiHeader.biSizeImage = w * h * 3 / 2;
 }
 
-void hevc_decoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
+void HEVCDecoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
 {
     mfxFrameInfo* pInfo = &pSurface->Info;
     mfxFrameData* pData = &pSurface->Data;
@@ -304,7 +304,7 @@ void hevc_decoder::FillOutputBuffer(mfxFrameSurface1* pSurface)
     }
 }
 
-LPBYTE hevc_decoder::GetFrame(LPBITMAPINFO& lpbi)
+LPBYTE HEVCDecoder::GetFrame(LPBITMAPINFO& lpbi)
 {
     lpbi = &m_biOutput;
     return m_lpbBufOut;

@@ -2,17 +2,17 @@
 
 #include "common_utils.h"
 
-class hevc_decoder
+class HEVCDecoder
 {
 public:
-	hevc_decoder();
-	~hevc_decoder();
+	HEVCDecoder();
+	~HEVCDecoder();
 
-	int decode(LPBYTE lpbFrame, LONG nFrameSize);
+	int Decode(LPBYTE lpbFrame, LONG nFrameSize);
 	LPBYTE GetFrame(LPBITMAPINFO& lpbi);
 
 private:
-	int initialize(LPBYTE lpbFrame, LONG nFrameSize);
+	int Init(LPBYTE lpbFrame, LONG nFrameSize);
 
 private:
 	void FillBITMAPINFO(mfxFrameSurface1* pSurface);
@@ -27,7 +27,7 @@ private:
 	}
 
 private:
-	MFXVideoSession m_session{};
+	MFXVideoSession m_session;
 	std::unique_ptr<MFXVideoDECODE> m_mfxDEC;
 	std::vector<mfxU8> m_surfaceBuffersData;
 	std::vector<mfxFrameSurface1> m_pmfxSurfaces;

@@ -1,22 +1,24 @@
 #include "hevcd.h"
 #include "hevc_decode.h"
 
-void* create_hevcd()
+typedef HEVCDecoder impl_type, *impl_ptr_type;
+
+handle_type create_hevcd()
 {
-	return new hevc_decoder();
+	return new impl_type();
 }
 
-void destroy_hevcd(void* p)
+void_type destroy_hevcd(handle_type p)
 {
-	delete (hevc_decoder*)p;
+	delete (impl_ptr_type)p;
 }
 
-int	decode(void* p, unsigned char* lpbFrame, long nFrameSize)
+int32_type hd_decode(handle_type p, byte_ptr_type lpbframe, int32_type nframesize)
 {
-	return ((hevc_decoder*)p)->decode(lpbFrame, nFrameSize);
+	return ((impl_ptr_type)p)->Decode(lpbframe, nframesize);
 }
 
-unsigned char* GetFrame(void* p, void*& lpbi)
+byte_ptr_type hd_getframe(handle_type p, handle_type* lpbi_out)
 {
-	return ((hevc_decoder*)p)->GetFrame((LPBITMAPINFO&)lpbi);
+	return ((impl_ptr_type)p)->GetFrame((LPBITMAPINFO&)*lpbi_out);
 }

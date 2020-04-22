@@ -28,16 +28,15 @@ int main()
     HINSTANCE hEVCD = ::LoadLibrary(DLL_HEVCD);
     if (hEVCD)
     {
-        typedef void* (*dll_create_hevcd)();
-        typedef void (*dll_destroy_hevcd)(void* p);
-
-        typedef int	(*dll_decode)(void* p, unsigned char* lpbFrame, long nFrameSize);
-        typedef unsigned char* (*dll_GetFrame)(void* p, void*& lpbi);
+        using dll_create_hevcd = decltype(&create_hevcd);
+        using dll_destroy_hevcd = decltype(&destroy_hevcd);
+        using dll_hd_decode = decltype(&hd_decode);
+        using dll_hd_getframe = decltype(&hd_getframe);
 
         dll_create_hevcd create_hevcd = reinterpret_cast<dll_create_hevcd>(::GetProcAddress(hEVCD, "create_hevcd"));
         dll_destroy_hevcd destroy_hevcd = reinterpret_cast<dll_destroy_hevcd>(::GetProcAddress(hEVCD, "destroy_hevcd"));
-        dll_decode decode = reinterpret_cast<dll_decode>(::GetProcAddress(hEVCD, "decode"));
-        dll_GetFrame GetFrame = reinterpret_cast<dll_GetFrame>(::GetProcAddress(hEVCD, "GetFrame"));
+        dll_hd_decode hd_decode = reinterpret_cast<dll_hd_decode>(::GetProcAddress(hEVCD, "hd_decode"));
+        dll_hd_getframe hd_getframe = reinterpret_cast<dll_hd_getframe>(::GetProcAddress(hEVCD, "hd_getframe"));
 
         constexpr int BUF_LEN = 287982;
         LPBYTE buf = (LPBYTE)realloc(nullptr, BUF_LEN);
@@ -50,16 +49,20 @@ int main()
         LPBYTE frmdata = {};
 
         int i = 0;
-        while (i++<180000)
+        while (i++<50)
         {
-            int ret = decode(hdl, buf, BUF_LEN);
+            printf("i:%d\n", i);
+            int ret = hd_decode(hdl, buf, BUF_LEN);
+            printf("-->1\n");
             lpbmpinfo = nullptr;
-            frmdata = GetFrame(hdl, (void*&)lpbmpinfo);
+            frmdata = hd_getframe(hdl, (void**)&lpbmpinfo);
+            printf("-->2\n");
+            //Sleep(20); // simulate render part code
 
-            Sleep(20); // simulate render part code
-
-            destroy_hevcd(hdl);
-            hdl = create_hevcd();
+            //destroy_hevcd(hdl);
+            //printf("-->3\n");
+            //hdl = create_hevcd();
+            //printf("-->4\n");
         }
 
         //write result yuv file
@@ -69,6 +72,8 @@ int main()
         destroy_hevcd(hdl);
 
         free(buf);
+
+        ::FreeLibrary(hEVCD);
     }
 
     return 0;

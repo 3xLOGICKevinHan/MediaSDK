@@ -1,5 +1,5 @@
 EXPORTS
 	create_hevcd
 	destroy_hevcd
-	decode
-	GetFrame
+	hd_decode
+	hd_getframe
