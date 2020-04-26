@@ -3,9 +3,9 @@
 
 typedef HEVCDecoder impl_type, *impl_ptr_type;
 
-handle_type create_hevcd()
+handle_type create_hevcd(int32_type switchtoavc)
 {
-	return new impl_type();
+	return new impl_type(switchtoavc);
 }
 
 void_type destroy_hevcd(handle_type p)

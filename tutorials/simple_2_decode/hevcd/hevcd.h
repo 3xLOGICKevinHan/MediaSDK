@@ -7,7 +7,7 @@ extern "C"
 	typedef int int32_type;
 	typedef unsigned char* byte_ptr_type;
 	
-	handle_type create_hevcd();
+	handle_type create_hevcd(int32_type switchtoavc);
 	void_type destroy_hevcd(handle_type p);
 
 	int32_type hd_decode(handle_type p, byte_ptr_type lpbframe, int32_type nframesize);

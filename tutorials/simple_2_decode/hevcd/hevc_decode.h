@@ -5,7 +5,7 @@
 class HEVCDecoder
 {
 public:
-	HEVCDecoder();
+	HEVCDecoder(bool switchtoavc);
 	~HEVCDecoder();
 
 	int Decode(LPBYTE lpbFrame, LONG nFrameSize);
@@ -37,4 +37,5 @@ private:
 	mfxU32  m_BufOutOffset{};
 
 	bool m_initialized{false};
+	bool m_switchtoavc{false};
 };

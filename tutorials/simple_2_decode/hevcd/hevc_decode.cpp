@@ -20,8 +20,9 @@
 
 #include "hevc_decode.h"
 
-HEVCDecoder::HEVCDecoder()
+HEVCDecoder::HEVCDecoder(bool switchtoavc)
 {
+    m_switchtoavc = switchtoavc;
 }
 
 HEVCDecoder::~HEVCDecoder()
@@ -61,27 +62,30 @@ int HEVCDecoder::Init(LPBYTE lpbFrame, LONG nFrameSize)
     // Set required video parameters for decode
     mfxVideoParam mfxVideoParams;
     memset(&mfxVideoParams, 0, sizeof(mfxVideoParams));
-    mfxVideoParams.mfx.CodecId = MFX_CODEC_HEVC;
+    mfxVideoParams.mfx.CodecId = m_switchtoavc ? MFX_CODEC_AVC : MFX_CODEC_HEVC;
     mfxVideoParams.IOPattern = MFX_IOPATTERN_OUT_SYSTEM_MEMORY;
 
-    // 4. Load the HEVC plugin
-    mfxPluginUID codecUID;
-    bool success = true;
-    codecUID = msdkGetPluginUID(impl, MSDK_VDECODE, mfxVideoParams.mfx.CodecId);
+    if (!m_switchtoavc)
+    {
+        // 4. Load the HEVC plugin
+        mfxPluginUID codecUID;
+        bool success = true;
+        codecUID = msdkGetPluginUID(impl, MSDK_VDECODE, mfxVideoParams.mfx.CodecId);
 
-    if (AreGuidsEqual(codecUID, MSDK_PLUGINGUID_NULL)) {
-        printf("Get Plugin UID for HEVC is failed.\n");
-        success = false;
-    }
-
-    printf("Loading HEVC plugin: %s\n", ConvertGuidToString(codecUID));
-
-    //On the success of get the UID, load the plugin
-    if (success) {
-        sts = MFXVideoUSER_Load(m_session, &codecUID, ver.Major);
-        if (sts < MFX_ERR_NONE) {
-            printf("Loading HEVC plugin failed\n");
+        if (AreGuidsEqual(codecUID, MSDK_PLUGINGUID_NULL)) {
+            printf("Get Plugin UID for HEVC is failed.\n");
             success = false;
+        }
+
+        printf("Loading HEVC plugin: %s\n", ConvertGuidToString(codecUID));
+
+        //On the success of get the UID, load the plugin
+        if (success) {
+            sts = MFXVideoUSER_Load(m_session, &codecUID, ver.Major);
+            if (sts < MFX_ERR_NONE) {
+                printf("Loading HEVC plugin failed\n");
+                success = false;
+            }
         }
     }
 
