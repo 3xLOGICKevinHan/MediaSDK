@@ -22,6 +22,11 @@
 
 HEVCDecoder::HEVCDecoder(bool switchtoavc)
 {
+    m_biOutput.bmiHeader.biBitCount = 12;
+    m_biOutput.bmiHeader.biPlanes = 3;
+    m_biOutput.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    m_biOutput.bmiHeader.biCompression = 842094169;
+
     m_switchtoavc = switchtoavc;
 }
 

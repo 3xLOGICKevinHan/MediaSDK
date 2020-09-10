@@ -24,8 +24,12 @@
 
 int main()
 {
+    //printf("-->00(enter main 1)\n");
+
     LPCTSTR DLL_HEVCD = "hevcd.dll";
+    //printf("-->00(enter main 2)\n");
     HINSTANCE hEVCD = ::LoadLibrary(DLL_HEVCD);
+    //printf("-->00(enter main 3)\n");
     if (hEVCD)
     {
         using dll_create_hevcd = decltype(&create_hevcd);
@@ -34,32 +38,45 @@ int main()
         using dll_hd_getframe = decltype(&hd_getframe);
 
         dll_create_hevcd create_hevcd = reinterpret_cast<dll_create_hevcd>(::GetProcAddress(hEVCD, "create_hevcd"));
+        if (!create_hevcd) printf("-->1(create_hevcd is null)\n");
         dll_destroy_hevcd destroy_hevcd = reinterpret_cast<dll_destroy_hevcd>(::GetProcAddress(hEVCD, "destroy_hevcd"));
+        if (!destroy_hevcd) printf("-->1(destroy_hevcd is null)\n");
         dll_hd_decode hd_decode = reinterpret_cast<dll_hd_decode>(::GetProcAddress(hEVCD, "hd_decode"));
+        if (!hd_decode) printf("-->1(hd_decode is null)\n");
         dll_hd_getframe hd_getframe = reinterpret_cast<dll_hd_getframe>(::GetProcAddress(hEVCD, "hd_getframe"));
+        if (!hd_getframe) printf("-->1(hd_getframe is null)\n");
 
         constexpr int BUF_LEN = 287982;
         LPBYTE buf = (LPBYTE)realloc(nullptr, BUF_LEN);
 
-        fileUniPtr fSource(OpenFile(R"(D:\Kevin\moredata.h265)", "rb"), &CloseFile);
+        fileUniPtr fSource(OpenFile(R"(C:\Program Files (x86)\Vigil\VIGIL Client\moredata.h265)", "rb"), &CloseFile);
         fread(buf, 1, BUF_LEN, fSource.get());
 
-        void* hdl = create_hevcd();
+        void* hdl = create_hevcd(0);
+        if (!hdl) printf("-->1a(hdl is null)\n");
         LPBITMAPINFO lpbmpinfo = nullptr;
         LPBYTE frmdata = {};
 
         mfxTime tStart, tEnd;
         mfxGetTime(&tStart);
 
-        int i = 0;
-        while (i++<50)
+        //int i = 0;
+        //while (i++<50)
         {
-            printf("i:%d\n", i);
+            //printf("i:%d\n", i);
             int ret = hd_decode(hdl, buf, BUF_LEN);
-            printf("-->1\n");
+            if (ret != 0) printf("-->1b(ret is NOT 0, fail to decode)\n");
             lpbmpinfo = nullptr;
             frmdata = hd_getframe(hdl, (void**)&lpbmpinfo);
-            printf("-->2\n");
+            if (!frmdata) printf("-->1c(fail to getframe)\n");
+            if (lpbmpinfo)
+            {
+                printf("-->1d(%ld)(%ld)\n", lpbmpinfo->bmiHeader.biWidth, lpbmpinfo->bmiHeader.biHeight);
+            }
+            else
+            {
+                printf("-->1d(fail to getframe)\n");
+            }
             //Sleep(20); // simulate render part code
 
             //destroy_hevcd(hdl);
@@ -74,7 +91,7 @@ int main()
         printf("\nExecution time: %3.2f s\n", elapsed);
 
         //write result yuv file
-        fileUniPtr fResult(OpenFile(R"(D:\Kevin\moredata.yuv)", "wb"), &CloseFile);
+        fileUniPtr fResult(OpenFile(R"(C:\Program Files (x86)\Vigil\VIGIL Client\moredata.yuv)", "wb"), &CloseFile);
         fwrite(frmdata, 1, lpbmpinfo->bmiHeader.biSizeImage, fResult.get());
 
         destroy_hevcd(hdl);
@@ -82,6 +99,10 @@ int main()
         free(buf);
 
         ::FreeLibrary(hEVCD);
+    }
+    else
+    {
+        printf("-->(fail to load hevcd.dll) 1\n");
     }
 
     return 0;
